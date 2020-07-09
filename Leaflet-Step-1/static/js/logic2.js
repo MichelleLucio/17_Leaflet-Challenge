@@ -3,10 +3,51 @@ let quakeURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_da
 
 d3.json(quakeURL, function(data){
     createMarkers(data.features);
-    console.log(data.features(properties.place));
-    console.log(data);
-});  
+    });  
 
+//colors for circle markers
+function color(mag){
+    if (mag > 5){
+        return "rgb(134, 9, 34)"
+    }
+    else if (mag>=4){
+        return "rgb(221, 77, 24) "
+    }
+    else if (mag>=3){
+        return "rgb(223, 143, 69) "
+    }
+    else if (mag>=2){
+        return "rgb(226, 193, 45)"
+    }
+    else if (mag>=1){
+        return "rgb(230, 233, 50)"
+    }
+    else{
+        return "rgb(120, 228, 31)"
+    }
+}
+
+//size for circle markers
+function size(mag){
+    if (mag > 5){
+        return 16
+    }
+    else if (mag>=4){
+        return 14
+    }
+    else if (mag>=3){
+        return 12
+    }
+    else if (mag>=2){
+        return 10
+    }
+    else if (mag>=1){
+        return 8
+    }
+    else{
+        return 6
+    }
+}
 
 function createMarkers(quakeData){
     console.log(quakeData);
@@ -18,6 +59,15 @@ function createMarkers(quakeData){
     }
 
     let quakeEvents = L.geoJSON(quakeData, {
+        pointToLayer: function(feature, latlng){
+            return new L.CircleMarker(latlng, {
+                radius: size(feature.properties.mag),
+                color: color(feature.properties.mag),
+                fillColor: color(feature.properties.mag),
+                weight: 1.0,
+                opacity: 0.8
+            });
+        },
         eachQuake: eachQuake
     });
 
@@ -67,6 +117,8 @@ function createMap(quakeEvents){
     L.control.layers(baseMaps, overlayMaps, {
         collapsed: false
     }).addTo(myMap);
+
+    //
 }
 
 
