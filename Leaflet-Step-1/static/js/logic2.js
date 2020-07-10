@@ -2,75 +2,60 @@
 let quakeURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
 
 d3.json(quakeURL, function(data){
-    createMarkers(data.features);
+    createFeatures(data.features);
     });  
 
 //colors for circle markers
-function color(mag){
+function circleColor(mag){
     if (mag > 5){
-        return "rgb(134, 9, 34)"
+        return "rgb(228, 15, 57)"
     }
     else if (mag>=4){
-        return "rgb(221, 77, 24) "
+        return "rgba(176, 19, 197, 0.952)  "
     }
     else if (mag>=3){
-        return "rgb(223, 143, 69) "
+        return "rgb(69, 161, 223)"
     }
     else if (mag>=2){
         return "rgb(226, 193, 45)"
     }
     else if (mag>=1){
-        return "rgb(230, 233, 50)"
+        return "rgb(223, 115, 199)"
     }
     else{
-        return "rgb(120, 228, 31)"
+        return "rgb(108, 206, 28)"
     }
 }
 
 //size for circle markers
-function size(mag){
-    if (mag > 5){
-        return 16
-    }
-    else if (mag>=4){
-        return 14
-    }
-    else if (mag>=3){
-        return 12
-    }
-    else if (mag>=2){
-        return 10
-    }
-    else if (mag>=1){
-        return 8
-    }
-    else{
-        return 6
-    }
+function circleSize(mag){
+    return mag*5;
 }
+    
 
-function createMarkers(quakeData){
+function createFeatures(quakeData){
     console.log(quakeData);
 
-    function eachQuake(feature, layer){
-        layer.bindPopup("<h3>" + feature.properties.place +
-         "</h3><br><h3> Magnitude: " + feature.properties.mag + "</h3>");
-
-    }
-
+    // function eachQuake(feature, layer){
+    //     layer.bindPopup("<h3>" + feature.properties.place +
+    //      "</h3><hr><p><h3> Magnitude: " + feature.properties.mag + "</h3></p>");
+    // };
+    
     let quakeEvents = L.geoJSON(quakeData, {
+        onEachFeature : function (feature, layer){
+            layer.bindPopup("<h3>" + feature.properties.place +
+            "</h3><hr><p> Time: " + new Date(feature.properties.time) + "<br> Magnitude: " +  feature.properties.mag +"</p>")
+        },
         pointToLayer: function(feature, latlng){
             return new L.CircleMarker(latlng, {
-                radius: size(feature.properties.mag),
-                color: color(feature.properties.mag),
-                fillColor: color(feature.properties.mag),
-                weight: 1.0,
-                opacity: 0.8
-            });
-        },
-        eachQuake: eachQuake
+                radius: circleSize(feature.properties.mag),
+                color: "gray",
+                fillColor: circleColor(feature.properties.mag),
+                weight: 1,
+                fillOpacity: 0.9,
+            })
+        }  
     });
-
     createMap(quakeEvents);
 }
 
@@ -109,7 +94,7 @@ function createMap(quakeEvents){
   // initialize the map on the "map" div with a given center and zoom
     let myMap = L.map("map", {
     center: [37.09, -95.71],
-    zoom: 4,
+    zoom: 5,
     layers: [streetmap, quakeEvents]
     });
 
@@ -119,11 +104,35 @@ function createMap(quakeEvents){
     }).addTo(myMap);
 
     //
+
+
+/*Legend specific*/
+    let legend = L.control({position: 'bottomright'});
+
+        legend.onAdd = function (myMap) {
+
+            let div = L.DomUtil.create('div', 'info legend'),
+                magnitudes = [0.5, 1, 2, 3, 4, 5.5],
+                labels = ['<strong>Legend: <br> Magnitude </strong>'],
+                categories = ["0", "1", "2", "3", "4", "5"];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+            for (let i = 0; i < magnitudes.length; i++) {
+                div.innerHTML +=
+                labels.push(
+                '<i style="background:' + circleColor(magnitudes[i]) + '"></i> ' +
+                (categories[i] ? categories[i] : '+'));
+
+            }
+            div.innerHTML = labels.join('<br>');
+        
+
+        return div;
+    }
+  
+    legend.addTo(myMap);
+
 }
-
-
-
-
   
 
 

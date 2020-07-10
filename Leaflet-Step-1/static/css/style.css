@@ -8,3 +8,24 @@ body,
 html {
   height: 100%;
 }
+
+.legend {
+  line-height: 18px;
+  color: #555;
+}
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.7;
+}
+
+/* #map{
+  background-color: rgb(228, 15, 57);
+  background-color: rgba(176, 19, 197, 0.952) ;
+  background-color: rgb(69, 161, 223) ;
+  background-color: rgb(226, 193, 45) ;
+  background-color: rgb(223, 115, 199) ;
+  background-color: rgb(108, 206, 28) ;
+} */
