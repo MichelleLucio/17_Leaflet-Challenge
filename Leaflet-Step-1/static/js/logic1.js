@@ -1,4 +1,4 @@
-// Perform an API call to the Citi Bike API to get station information. Call createMarkers when complete
+// Perform an API call to the USGS Earthquake API. Call createFeatures when complete
 let quakeURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
 
 d3.json(quakeURL, function(data){
@@ -32,15 +32,12 @@ function circleSize(mag){
     return mag*5;
 }
     
-
+// function to create features/markers for earthquakes
 function createFeatures(quakeData){
     console.log(quakeData);
 
-    // function eachQuake(feature, layer){
-    //     layer.bindPopup("<h3>" + feature.properties.place +
-    //      "</h3><hr><p><h3> Magnitude: " + feature.properties.mag + "</h3></p>");
-    // };
-    
+
+    //create popup info & bind to layers & marker design
     let quakeEvents = L.geoJSON(quakeData, {
         onEachFeature : function (feature, layer){
             layer.bindPopup("<h3>" + feature.properties.place +
@@ -59,9 +56,8 @@ function createFeatures(quakeData){
     createMap(quakeEvents);
 }
 
-
+//function to create the map 
 function createMap(quakeEvents){
-
 
    // Define streetmap and darkmap layers
    let streetmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
@@ -91,7 +87,7 @@ function createMap(quakeEvents){
         Earthquakes: quakeEvents
     };
 
-  // initialize the map on the "map" div with a given center and zoom
+  // initialize the map on the "map" div with a given center (center of USA) and zoom
     let myMap = L.map("map", {
     center: [37.09, -95.71],
     zoom: 5,
@@ -106,17 +102,17 @@ function createMap(quakeEvents){
     //
 
 
-/*Legend specific*/
+// create the Legend
     let legend = L.control({position: 'bottomright'});
 
         legend.onAdd = function (myMap) {
 
             let div = L.DomUtil.create('div', 'info legend'),
                 magnitudes = [0.5, 1, 2, 3, 4, 5.5],
-                labels = ['<strong>Legend: <br> Magnitude </strong>'],
-                categories = ["0", "1", "2", "3", "4", "5"];
+                labels = ['<h3> Map Info: USGS <br>All Earthquakes<br> in Past Day</h3><br><strong>Legend: <br> Magnitude </strong>'],
+                categories = ["0-1", "1-2", "2-3", "3-4", "4-5", "5+"];
 
-    // loop through our density intervals and generate a label with a colored square for each interval
+    // loop through each magnitude and generate a label with a colored square for each interval
             for (let i = 0; i < magnitudes.length; i++) {
                 div.innerHTML +=
                 labels.push(
