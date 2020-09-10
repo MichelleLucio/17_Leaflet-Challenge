@@ -1,5 +1,10 @@
 # Leaflet Homework - Visualizing Data with Leaflet
 
+- - -
+## visit website: https://michellelucio.github.io/17_Leaflet-Challenge/
+
+- - -
+
 ## Background
 
 ![1-Logo](Images/1-Logo.png)
@@ -46,6 +51,3 @@ In this step we are going to..
 * Add a number of base maps to choose from as well as separate out our two different data sets into overlays that can be turned on and off independently.
 
 * Add layer controls to our map.
-
-- - -
-visit: https://michellelucio.github.io/17_Leaflet-Challenge/
